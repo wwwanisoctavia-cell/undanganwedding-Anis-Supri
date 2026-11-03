@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Undangan Pernikahan</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap');
+@import url('https://db.onlinewebfonts.com/c/4f88f680537c8291217f919f524d67d7?family=MaryKate');
+
+* { box-sizing:border-box; margin:0; padding:0; }
+
+html {
+  scroll-behavior:smooth;
+  scroll-snap-type:y proximity;
+  -webkit-text-size-adjust:none;
+  text-size-adjust:none;
+}
+
+body {
+  font-family:sans-serif;
+  background:#fff;
+  color:#222;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:none;
+}
+
+button { font:inherit; cursor:pointer; touch-action:manipulation; }
+
+.page {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  width:100%;
+  height:100vh;
+  height:100svh;
+  min-height:100vh;
+  min-height:100svh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:24px;
+  padding-bottom:calc(100px + env(safe-area-inset-bottom));
+  background:#eee;
+  scroll-snap-align:start;
+}
+
+.bg-image,.bg-video {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  pointer-events:none;
+  z-index:-1;
+}
+
+.content {
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:600px;
+  text-align:center;
+}
+
+/* COVER */
+.cover-button {
+  position:relative;
+  z-index:2;
+  top:43vh;
+  display:inline-block;
+  padding:5px 10px;
+  border:1px solid #555;
+  border-radius:6px;
+  background:#BFDCFC;
+  color:#222;
+  text-decoration:none;
+}
+
+#cover .nama-undangan {
+  position:absolute;
+  z-index:2;
+  top:78%;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  text-align:center;
+  color:#3d6180;
+}
+
+#cover .nama-undangan p {
+  font-family:'Caveat',cursive;
+  font-size:16px;
+  margin-bottom:2px;
+}
+
+#cover .nama-undangan h2 {
+  font-family:'Caveat',cursive;
+  font-size:22px;
+  font-weight:500;
+}
+
+/* LOKASI DAN COUNTDOWN */
+.event-info { margin-top:-10px; line-height:1.8; }
+
+#lokasi-countdown .event-info p {
+  position:relative;
+  top:-20px;
+  font-family:'Caveat',cursive;
+  font-size:20px;
+  color:#3d6180;
+}
+
+.location-button {
+  display:inline-block;
+  margin-top:2px;
+  padding:3px 8px;
+  background:#BFDCFC;
+  color:#222;
+  border:1px solid #555;
+  border-radius:6px;
+  text-decoration:none;
+}
+
+.countdown-container {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:8px;
+  margin-top:90px;
+}
+
+.countdown-item {
+  min-width:58px;
+  padding:10px 6px;
+  border:1px solid #777;
+  border-radius:6px;
+  background:rgba(255,255,255,.85);
+}
+
+.countdown-number {
+  display:block;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.countdown-label {
+  display:block;
+  margin-top:4px;
+  font-size:12px;
+}
+
+#status-acara { margin-top:18px; line-height:1.6; }
+
+/* GIFT */
+#gift > .content {
+  position:relative;
+  top:60px;
+}
+
+.gift-button {
+  display:inline-block;
+  margin-top:20px;
+  padding:8px 14px;
+  background:#BFDCFC;
+  color:#222;
+  border:1px solid #555;
+  border-radius:6px;
+}
+
+.gift-info {
+  margin-top:16px;
+  line-height:1.8;
+  overflow-wrap:anywhere;
+}
+
+/* MUSIK */
+.music-button {
+  position:absolute;
+  z-index:101;
+  top:10%;
+  left:62%;
+  transform:translateX(-50%);
+  width:36px;
+  height:36px;
+  border:1px solid #ddd;
+  border-radius:50%;
+  background:rgba(255,255,255,.9);
+}
+
+/* NAVIGASI */
+.bottom-nav {
+  display:none;
+  position:fixed;
+  z-index:100;
+  left:50%;
+  bottom:calc(12px + env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  padding:8px 12px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  background:rgba(255,255,255,.95);
+}
+
+.nav-button {
+  width:42px;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:none;
+  border-radius:8px;
+  background:transparent;
+}
+
+.nav-icon { font-size:25px; color:#3d6180; }
+
+.cover-button,.location-button,.gift-button {
+  font-family:Georgia,serif !important;
+  font-weight:600;
+  font-size:14px;
+  color:#3d6180;
+}
+
+/* BUKU TAMU */
+#rsvp {
+  background:linear-gradient(145deg,#eaf4ff,#d5e8fb,#f5faff);
+}
+
+#rsvp .content {
+  max-width:480px;
+  max-height:calc(100svh - 115px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.rsvp-title {
+  color:#426987;
+  font-family:'Caveat',cursive;
+  font-size:38px;
+  font-weight:500;
+  margin-bottom:3px;
+}
+
+.rsvp-subtitle {
+  color:#718ba2;
+  font-size:12px;
+  margin-bottom:15px;
+}
+
+.rsvp-form {
+  width:100%;
+  padding:16px;
+  border-radius:15px;
+  background:rgba(255,255,255,.88);
+  box-shadow:0 5px 20px rgba(65,105,135,.10);
+  text-align:left;
+}
+
+.rsvp-label {
+  display:block;
+  color:#526f89;
+  font-size:12px;
+  margin-bottom:5px;
+}
+
+.rsvp-input,.rsvp-textarea {
+  width:100%;
+  border:1px solid #d5e3ef;
+  border-radius:8px;
+  padding:10px 12px;
+  background:#fafdff;
+  color:#344c60;
+  font:14px sans-serif;
+  outline:none;
+  margin-bottom:12px;
+}
+
+.rsvp-textarea {
+  height:75px;
+  resize:none;
+}
+
+.rsvp-submit {
+  width:100%;
+  border:0;
+  border-radius:8px;
+  padding:11px;
+  color:white;
+  background:#7299bb;
+  font-size:14px;
+}
+
+.rsvp-submit:disabled {
+  opacity:.6;
+}
+
+.rsvp-status {
+  min-height:18px;
+  text-align:center;
+  color:#527b9c;
+  font-size:11px;
+  margin-top:8px;
+}
+
+.guestbook-heading {
+  color:#52728e;
+  font-family:'Caveat',cursive;
+  font-size:25px;
+  margin:12px 0 7px;
+}
+
+.ucapan-list {
+  width:100%;
+  overflow-y:auto;
+  min-height:0;
+  padding:2px 3px 8px;
+}
+
+.ucapan-card {
+  background:rgba(255,255,255,.88);
+  border:1px solid #e0ebf4;
+  border-radius:10px;
+  padding:10px 12px;
+  margin-bottom:8px;
+  text-align:left;
+  overflow-wrap:anywhere;
+}
+
+.ucapan-card strong {
+  color:#456b8a;
+  font-size:13px;
+}
+
+.ucapan-card p {
+  color:#526474;
+  font-size:12px;
+  line-height:1.5;
+  margin-top:4px;
+}
+
+.ucapan-card small {
+  display:block;
+  color:#9aabb9;
+  font-size:10px;
+  margin-top:5px;
+}
+
+.ucapan-kosong {
+  color:#718ba2;
+  font-size:12px;
+  padding:12px;
+}
+
+@media(max-width:360px) {
+  .page { padding-left:14px; padding-right:14px; }
+  .countdown-container { gap:5px; }
+  .countdown-item { min-width:52px; }
+  .countdown-number { font-size:19px; }
+  .bottom-nav { gap:4px; }
+  .rsvp-form { padding:12px; }
+}
+
+body.cover-terkunci {
+  overflow:hidden;
+  height:100vh;
+}
+
+@keyframes munculDariBawah {
+  from { opacity:0; transform:translateY(35px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.page.muncul .bg-image,
+.page.muncul .bg-video {
+  animation:munculDariBawah 1.2s ease both;
+}
+
+.page.muncul .content {
+  animation:munculDariBawah 1.5s ease both;
+}
+</style>
+</head>
+
+<body>
+
+<section class="page" id="cover">
+<img class="bg-image" src="1.WEBP" alt="Cover undangan" fetchpriority="high" decoding="async">
+  <div class="content">
+    <button class="cover-button" type="button" onclick="bukaUndangan()">Buka Undangan</button>
+  </div>
+  <div class="nama-undangan">
+    <p>Dear,</p>
+    <h2 id="nama-tamu">Tamu Undangan</h2>
+  </div>
+</section>
+
+<section class="page" id="section-2">
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="2.MP4" type="video/MP4">
+  </video>
+  <button class="music-button" id="tombol-musik" type="button" onclick="toggleMusik()" aria-label="Putar musik" aria-pressed="false">
+    <span id="ikon-musik">▶️</span>
+  </button>
+</section>
+
+<section class="page" id="section-3">
+  <img class="bg-image" src="3.WEBP" alt="">
+</section>
+
+<section class="page" id="section-4">
+  <img class="bg-image" src="4.WEBP" alt="">
+</section>
+
+<section class="page" id="lokasi-countdown">
+  <img class="bg-image" src="5.WEBP" alt="">
+  <div class="content">
+    <div class="event-info">
+      <p>Selasa, 8 Desember 2026</p>
+      <p>Pukul 09.00 WIB</p>
+      <p>Desa Randu, Pecalungan</p>
+      <a class="location-button" href="https://maps.app.goo.gl/cLHLugiaV9WezTDn7?g_st=ic" target="_blank" rel="noopener noreferrer">📍 Lihat Lokasi</a>
+    </div>
+    <div class="countdown-container">
+      <div class="countdown-item"><span class="countdown-number" id="hari">0</span><span class="countdown-label">Hari</span></div>
+      <div class="countdown-item"><span class="countdown-number" id="jam">00</span><span class="countdown-label">Jam</span></div>
+      <div class="countdown-item"><span class="countdown-number" id="menit">00</span><span class="countdown-label">Menit</span></div>
+      <div class="countdown-item"><span class="countdown-number" id="detik">00</span><span class="countdown-label">Detik</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="section-6">
+  <img class="bg-image" src="6.WEBP" alt="">
+</section>
+
+<section class="page" id="gift">
+  <img class="bg-image" src="7.WEBP" alt="">
+  <div class="content">
+    <h2>Wedding Gift</h2>
+    <div class="gift-info">
+      <p>Bank: Seabank</p>
+      <p>Nomor rekening:</p>
+      <p id="nomor-rekening">901168885116</p>
+      <p>Atas nama: Anis Mufidah</p>
+      <button class="gift-button" type="button" onclick="salinRekening()">Salin Nomor Rekening</button>
+      <p id="status-salin" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 8: BUKU TAMU -->
+<section class="page" id="rsvp">
+  <div class="content">
+    <h2 class="rsvp-title">Wedding Wishes</h2>
+    <p class="rsvp-subtitle">Tuliskan doa dan ucapan terbaik untuk kami</p>
+
+    <form class="rsvp-form" id="form-ucapan">
+      <label class="rsvp-label" for="input-nama">Nama</label>
+      <input class="rsvp-input" id="input-nama" type="text" maxlength="60" placeholder="Nama kamu" required>
+
+      <label class="rsvp-label" for="input-ucapan">Ucapan & Doa</label>
+      <textarea class="rsvp-textarea" id="input-ucapan" maxlength="500" placeholder="Tuliskan ucapan dan doa..." required></textarea>
+
+      <button class="rsvp-submit" id="tombol-kirim" type="submit">Kirim Ucapan ♡</button>
+      <p class="rsvp-status" id="status-ucapan" aria-live="polite"></p>
+    </form>
+
+    <h3 class="guestbook-heading">Ucapan dari Tamu</h3>
+    <div class="ucapan-list" id="daftar-ucapan">
+      <p class="ucapan-kosong">Memuat ucapan...</p>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="penutup">
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="8.mp4" type="video/mp4">
+  </video>
+  <div class="content"><h2></h2></div>
+</section>
+
+<audio id="musik-latar" loop preload="none">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<nav class="bottom-nav" aria-label="Navigasi undangan">
+  <button class="nav-button" type="button" aria-label="Cover" onclick="keSection('cover')"><span class="nav-icon">⌂</span></button>
+  <button class="nav-button" type="button" aria-label="Lokasi acara" onclick="keSection('lokasi-countdown')"><span class="nav-icon">⌖</span></button>
+  <button class="nav-button" type="button" aria-label="Gift" onclick="keSection('gift')"><span class="nav-icon">♡</span></button>
+  <button class="nav-button" type="button" aria-label="Penutup" onclick="keSection('penutup')"><span class="nav-icon">×</span></button>
+</nav>
+
+<script>
+/* URL APPS SCRIPT */
+const API_UCAPAN = "https://script.google.com/macros/s/AKfycby27z24uB8ODGGsXhMCdVAAeIlLUWLyrXV6i8q3CshEVcQpGn0ORal91qTu-tzyOnQVAw/exec";
+
+/* BUKA UNDANGAN */
+function bukaUndangan() {
+  document.body.classList.remove("cover-terkunci");
+  keSection("section-2");
+  const audio = document.getElementById("musik-latar");
+  if (audio.paused) {
+    audio.play().then(perbaruiTombolMusik).catch(perbaruiTombolMusik);
+  }
+}
+
+/* NAVIGASI */
+function keSection(id) {
+  const section = document.getElementById(id);
+  if (section) section.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+/* COUNTDOWN */
+const waktuAcara = new Date("2026-12-08T09:00:00+07:00").getTime();
+
+function perbaruiCountdown() {
+  const sisa = waktuAcara - Date.now();
+  const hari = document.getElementById("hari");
+  const jam = document.getElementById("jam");
+  const menit = document.getElementById("menit");
+  const detik = document.getElementById("detik");
+
+  if (!hari || !jam || !menit || !detik) return;
+
+  if (sisa <= 0) {
+    hari.textContent="0"; jam.textContent="00";
+    menit.textContent="00"; detik.textContent="00";
+    return;
+  }
+
+  hari.textContent=Math.floor(sisa/(1000*60*60*24));
+  jam.textContent=String(Math.floor((sisa%(1000*60*60*24))/(1000*60*60))).padStart(2,"0");
+  menit.textContent=String(Math.floor((sisa%(1000*60*60))/(1000*60))).padStart(2,"0");
+  detik.textContent=String(Math.floor((sisa%(1000*60))/1000)).padStart(2,"0");
+}
+
+perbaruiCountdown();
+setInterval(perbaruiCountdown,1000);
+
+/* MUSIK */
+const audioMusik = document.getElementById("musik-latar");
+
+function perbaruiTombolMusik() {
+  const ikon=document.getElementById("ikon-musik");
+  const tombol=document.getElementById("tombol-musik");
+
+  if (audioMusik.paused) {
+    ikon.textContent="▶️";
+    tombol.setAttribute("aria-label","Putar musik");
+    tombol.setAttribute("aria-pressed","false");
+  } else {
+    ikon.textContent="Ⅱ";
+    tombol.setAttribute("aria-label","Jeda musik");
+    tombol.setAttribute("aria-pressed","true");
+  }
+}
+
+async function toggleMusik() {
+  try {
+    if (audioMusik.paused) await audioMusik.play();
+    else audioMusik.pause();
+  } catch(error) {
+    console.error("Musik tidak bisa diputar:",error);
+  }
+  perbaruiTombolMusik();
+}
+
+audioMusik.addEventListener("play",perbaruiTombolMusik);
+audioMusik.addEventListener("pause",perbaruiTombolMusik);
+
+/* SALIN REKENING */
+async function salinRekening() {
+  const nomor=document.getElementById("nomor-rekening").textContent.trim();
+  const status=document.getElementById("status-salin");
+
+  try {
+    await navigator.clipboard.writeText(nomor);
+    status.textContent="Nomor rekening berhasil disalin.";
+  } catch(error) {
+    status.textContent="Gagal menyalin otomatis. Silakan salin nomor secara manual.";
+  }
+}
+
+/* NAMA TAMU DARI LINK */
+const parameterTamu=new URLSearchParams(window.location.search);
+const namaDariLink=parameterTamu.get("to");
+const elemenNamaTamu=document.getElementById("nama-tamu");
+
+if (elemenNamaTamu && namaDariLink && namaDariLink.trim()!=="") {
+  elemenNamaTamu.textContent=namaDariLink.replace(/\+/g," ").trim();
+} else if (elemenNamaTamu) {
+  elemenNamaTamu.textContent="Tamu Undangan";
+}
+
+/* BUKU TAMU: MENAMPILKAN UCAPAN DENGAN JSONP */
+function tampilkanUcapan(data) {
+  const daftar=document.getElementById("daftar-ucapan");
+  daftar.replaceChildren();
+
+  if (!Array.isArray(data) || data.length===0) {
+    const kosong=document.createElement("p");
+    kosong.className="ucapan-kosong";
+    kosong.textContent="Belum ada ucapan. Jadilah yang pertama! ♡";
+    daftar.appendChild(kosong);
+    return;
+  }
+
+  data.slice().reverse().forEach(item=>{
+    const kartu=document.createElement("div");
+    kartu.className="ucapan-card";
+
+    const nama=document.createElement("strong");
+    nama.textContent=item.nama || "Tamu";
+
+    const isi=document.createElement("p");
+    isi.textContent=item.ucapan || "";
+
+    const waktu=document.createElement("small");
+    const tanggal=new Date(item.waktu);
+    waktu.textContent=isNaN(tanggal.getTime()) ? "" :
+      tanggal.toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"});
+
+    kartu.append(nama,isi,waktu);
+    daftar.appendChild(kartu);
+  });
+}
+
+function muatUcapan() {
+  const script=document.createElement("script");
+  const callback="callbackUcapanWedding";
+
+  window[callback]=function(data) {
+    tampilkanUcapan(data);
+    delete window[callback];
+    script.remove();
+  };
+
+  script.onerror=function() {
+    document.getElementById("daftar-ucapan").textContent="Ucapan belum dapat dimuat. Coba muat ulang halaman.";
+    delete window[callback];
+    script.remove();
+  };
+
+  script.src=API_UCAPAN+"?callback="+callback+"&_="+Date.now();
+  document.body.appendChild(script);
+}
+
+/* BUKU TAMU: MENGIRIM UCAPAN */
+document.getElementById("form-ucapan").addEventListener("submit",async function(event) {
+  event.preventDefault();
+
+  const nama=document.getElementById("input-nama").value.trim();
+  const ucapan=document.getElementById("input-ucapan").value.trim();
+  const status=document.getElementById("status-ucapan");
+  const tombol=document.getElementById("tombol-kirim");
+
+  if (!nama || !ucapan) {
+    status.textContent="Nama dan ucapan wajib diisi.";
+    return;
+  }
+
+  tombol.disabled=true;
+  tombol.textContent="Mengirim...";
+  status.textContent="Sedang mengirim ucapan...";
+
+  try {
+    await fetch(API_UCAPAN,{
+      method:"POST",
+      mode:"no-cors",
+      headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},
+      body:new URLSearchParams({nama:nama,ucapan:ucapan})
+    });
+
+    status.textContent="Terima kasih! Ucapanmu sedang dikirim ♡";
+    this.reset();
+
+    setTimeout(muatUcapan,1800);
+  } catch(error) {
+    status.textContent="Pengiriman gagal. Silakan coba lagi.";
+  } finally {
+    tombol.disabled=false;
+    tombol.textContent="Kirim Ucapan ♡";
+  }
+});
+
+/* STATUS MUSIK DAN ANIMASI */
+perbaruiTombolMusik();
+
+const pengamatSection=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if (entry.isIntersecting) entry.target.classList.add("muncul");
+    else entry.target.classList.remove("muncul");
+  });
+},{threshold:0.35});
+
+document.querySelectorAll(".page").forEach(section=>{
+  pengamatSection.observe(section);
+});
+
+document.body.classList.add("cover-terkunci");
+
+/* MUAT UCAPAN SAAT HALAMAN DIBUKA */
+muatUcapan();
+</script>
+
+</body>
+</html>
