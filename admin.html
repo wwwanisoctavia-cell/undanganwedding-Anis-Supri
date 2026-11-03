@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Wedding Wishes</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;padding:25px 16px;
+  font-family:Georgia,serif;
+  background:linear-gradient(135deg,#eaf4ff,#c9e0f5);
+  color:#3d6180;min-height:100vh
+}
+.container{max-width:600px;margin:auto}
+h1{text-align:center;font-size:27px}
+.subtitle{text-align:center;font-size:13px;margin-bottom:25px}
+.panel{
+  background:#ffffffd9;padding:22px;
+  border-radius:18px;margin-bottom:18px;
+  box-shadow:0 5px 20px #7898b322
+}
+input{
+  width:100%;padding:13px;margin:8px 0;
+  border:1px solid #c6d9e9;border-radius:10px;
+  font-size:15px
+}
+button{
+  border:0;border-radius:10px;padding:12px 16px;
+  background:#8db8dc;color:white;
+  font-size:14px;font-weight:bold;cursor:pointer
+}
+button:disabled{opacity:.5}
+.full{width:100%;margin-top:8px}
+.ucapan{
+  background:white;padding:16px;border-radius:13px;
+  margin:12px 0;border:1px solid #dceaf5;
+  overflow-wrap:anywhere
+}
+.nama{font-weight:bold;margin-bottom:8px}
+.pesan{font-size:14px;line-height:1.6}
+.hapus{background:#d98591;margin-top:12px}
+#daftar{margin-top:18px}
+#status{text-align:center;font-size:13px;margin:12px 0}
+.sembunyi{display:none}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Wedding Wishes</h1>
+  <div class="subtitle">Admin Panel · Anis & Supri</div>
+
+  <div class="panel" id="loginPanel">
+    <h3>Login Admin</h3>
+    <input id="password" type="password"
+      placeholder="Masukkan password admin">
+    <button class="full" onclick="login()">Masuk</button>
+  </div>
+
+  <div id="adminPanel" class="sembunyi">
+    <div class="panel">
+      <h3>Daftar Ucapan</h3>
+      <button class="full" onclick="muatUcapan()">Muat Ulang</button>
+      <button class="full hapus" onclick="keluar()">Keluar</button>
+      <div id="status"></div>
+      <div id="daftar"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_UCAPAN =
+"https://script.google.com/macros/s/AKfycby27z24uB8ODGGsXhMCdVAAeIlLUWLyrXV6i8q3CshEVcQpGn0ORal91qTu-tzyOnQVAw/exec";
+
+let passwordAdmin = "";
+let daftarData = [];
+
+function login(){
+  const pw = document.getElementById("password").value;
+  if(!pw){
+    alert("Masukkan password terlebih dahulu.");
+    return;
+  }
+
+  passwordAdmin = pw;
+  document.getElementById("loginPanel").classList.add("sembunyi");
+  document.getElementById("adminPanel").classList.remove("sembunyi");
+  muatUcapan();
+}
+
+function keluar(){
+  passwordAdmin = "";
+  daftarData = [];
+  document.getElementById("password").value = "";
+  document.getElementById("daftar").innerHTML = "";
+  document.getElementById("adminPanel").classList.add("sembunyi");
+  document.getElementById("loginPanel").classList.remove("sembunyi");
+}
+
+function muatUcapan(){
+  const status = document.getElementById("status");
+  status.textContent = "Memuat ucapan...";
+
+  const callback = "adminUcapan_" + Date.now();
+  const script = document.createElement("script");
+
+  window[callback] = function(data){
+    daftarData = Array.isArray(data) ? data : [];
+    tampilkanUcapan();
+    status.textContent = daftarData.length + " ucapan ditemukan.";
+    delete window[callback];
+    script.remove();
+  };
+
+  script.onerror = function(){
+    status.textContent = "Gagal memuat ucapan. Coba lagi.";
+    delete window[callback];
+    script.remove();
+  };
+
+  script.src = API_UCAPAN + "?callback=" + callback +
+    "&_=" + Date.now();
+  document.body.appendChild(script);
+}
+
+function tampilkanUcapan(){
+  const daftar = document.getElementById("daftar");
+  daftar.innerHTML = "";
+
+  if(!daftarData.length){
+    daftar.textContent = "Belum ada ucapan.";
+    return;
+  }
+
+  daftarData.forEach(item => {
+    const kartu = document.createElement("div");
+    kartu.className = "ucapan";
+
+    const nama = document.createElement("div");
+    nama.className = "nama";
+    nama.textContent = item.nama;
+
+    const pesan = document.createElement("div");
+    pesan.className = "pesan";
+    pesan.textContent = item.ucapan;
+
+    const tombol = document.createElement("button");
+    tombol.className = "hapus";
+    tombol.textContent = "Hapus ucapan";
+    tombol.onclick = () => hapusUcapan(item.baris, tombol);
+
+    kartu.append(nama, pesan, tombol);
+    daftar.appendChild(kartu);
+  });
+}
+
+async function hapusUcapan(baris, tombol){
+  if(!confirm("Yakin ingin menghapus ucapan ini?")) return;
+
+  tombol.disabled = true;
+  tombol.textContent = "Menghapus...";
+
+  try{
+    const body = new URLSearchParams({
+      aksi:"hapus",
+      password:passwordAdmin,
+      nomorBaris:String(baris)
+    });
+
+    await fetch(API_UCAPAN,{
+      method:"POST",
+      mode:"no-cors",
+      headers:{
+        "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"
+      },
+      body
+    });
+
+    document.getElementById("status").textContent =
+      "Permintaan hapus dikirim. Memuat ulang daftar...";
+
+    setTimeout(muatUcapan,1800);
+
+  }catch(error){
+    alert("Gagal mengirim permintaan hapus.");
+    tombol.disabled = false;
+    tombol.textContent = "Hapus ucapan";
+  }
+}
+</script>
+</body>
+</html>
